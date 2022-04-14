@@ -124,7 +124,8 @@ mod tests {
                         Ident@5..11 "online"
                       Colon@11..12 ":"
                       Operand@12..16
-                        Boolean@12..16 "true"
+                        Literal@12..16
+                          Boolean@12..16 "true"
                     Plus@16..17 "+""#]],
         );
     }
@@ -142,21 +143,24 @@ mod tests {
                           Ident@0..4 "host"
                         Colon@4..5 ":"
                         Operand@5..14
-                          String@5..14 "'windows'"
+                          Literal@5..14
+                            String@5..14 "'windows'"
                       Plus@14..15 "+"
                       Clause@15..29
                         Property@15..21
                           Ident@15..21 "online"
                         Colon@21..22 ":"
                         Operand@22..29
-                          String@22..29 "'today'"
+                          Literal@22..29
+                            String@22..29 "'today'"
                     Plus@29..30 "+"
                     Clause@30..54
                       Property@30..44
                         Ident@30..44 "sensor_version"
                       Colon@44..45 ":"
                       Operand@45..54
-                        String@45..54 "'current'""#]],
+                        Literal@45..54
+                          String@45..54 "'current'""#]],
         )
     }
 
@@ -172,7 +176,8 @@ mod tests {
                         Ident@0..4 "host"
                       Colon@4..5 ":"
                       Operand@5..14
-                        String@5..14 "'windows'"
+                        Literal@5..14
+                          String@5..14 "'windows'"
                     Comma@14..15 ","
                     InfixExpr@15..54
                       Clause@15..29
@@ -180,14 +185,16 @@ mod tests {
                           Ident@15..21 "online"
                         Colon@21..22 ":"
                         Operand@22..29
-                          String@22..29 "'today'"
+                          Literal@22..29
+                            String@22..29 "'today'"
                       Plus@29..30 "+"
                       Clause@30..54
                         Property@30..44
                           Ident@30..44 "sensor_version"
                         Colon@44..45 ":"
                         Operand@45..54
-                          String@45..54 "'current'""#]],
+                          Literal@45..54
+                            String@45..54 "'current'""#]],
         )
     }
 
@@ -208,7 +215,8 @@ mod tests {
                             Ident@6..12 "online"
                           Colon@12..13 ":"
                           Operand@13..17
-                            Boolean@13..17 "true"
+                            Literal@13..17
+                              Boolean@13..17 "true"
                         Comma@17..18 ","
                         Clause@18..42
                           Property@18..34
@@ -217,7 +225,8 @@ mod tests {
                             Ident@23..34 "last_online"
                           Colon@34..35 ":"
                           Operand@35..42
-                            String@35..42 "'today'"
+                            Literal@35..42
+                              String@35..42 "'today'"
                       RParen@42..43 ")"
                     Plus@43..44 "+"
                     Clause@44..73
@@ -227,7 +236,8 @@ mod tests {
                         Ident@49..63 "sensor_version"
                       Colon@63..64 ":"
                       Operand@64..73
-                        String@64..73 "'current'""#]],
+                        Literal@64..73
+                          String@64..73 "'current'""#]],
         )
     }
 
@@ -248,7 +258,8 @@ mod tests {
                             Ident@6..12 "online"
                           Colon@12..13 ":"
                           Operand@13..17
-                            Boolean@13..17 "true"
+                            Literal@13..17
+                              Boolean@13..17 "true"
                         Comma@17..18 ","
                         Clause@18..34
                           Property@18..34
@@ -264,7 +275,8 @@ mod tests {
                         Ident@41..55 "sensor_version"
                       Colon@55..56 ":"
                       Operand@56..65
-                        String@56..65 "'current'"
+                        Literal@56..65
+                          String@56..65 "'current'"
 
                 At 34..35, expected '.', or ':', found ')'
                 At 34..35, expected '!', '>', '<', '>=', '<=', '~', '!~', '[', boolean, string, or integer, found ')'"#]],
@@ -284,7 +296,8 @@ mod tests {
                       Ident@5..11 "online"
                     Colon@11..12 ":"
                     Operand@12..16
-                      Boolean@12..16 "true""#]],
+                      Literal@12..16
+                        Boolean@12..16 "true""#]],
         );
     }
 
@@ -320,7 +333,8 @@ mod tests {
                     Operator@14..15
                       Bang@14..15 "!"
                     Operand@15..22
-                      String@15..22 "'Linux'""#]],
+                      Literal@15..22
+                        String@15..22 "'Linux'""#]],
         )
     }
 
@@ -369,17 +383,18 @@ mod tests {
         check(
             "hostname:!['sample']",
             expect![[r#"
-            Root@0..20
-              Clause@0..20
-                Property@0..8
-                  Ident@0..8 "hostname"
-                Colon@8..9 ":"
-                Operator@9..10
-                  Bang@9..10 "!"
-                Operand@10..20
-                  LBracket@10..11 "["
-                  String@11..19 "'sample'"
-                  RBracket@19..20 "]""#]],
+                Root@0..20
+                  Clause@0..20
+                    Property@0..8
+                      Ident@0..8 "hostname"
+                    Colon@8..9 ":"
+                    Operator@9..10
+                      Bang@9..10 "!"
+                    Operand@10..20
+                      LBracket@10..11 "["
+                      Literal@11..19
+                        String@11..19 "'sample'"
+                      RBracket@19..20 "]""#]],
         )
     }
 
@@ -398,7 +413,8 @@ mod tests {
                     Operator@16..17
                       Gt@16..17 ">"
                     Operand@17..20
-                      Integer@17..20 "100""#]],
+                      Literal@17..20
+                        Integer@17..20 "100""#]],
         )
     }
 }

@@ -7,7 +7,7 @@ use crate::{
     syntax::{Fql, SyntaxElement, SyntaxKind, SyntaxNode, SyntaxToken},
 };
 
-use super::Property;
+use super::{Literal, Property};
 
 #[derive(Debug, Clone)]
 pub enum Expr {
@@ -177,3 +177,9 @@ impl Clause {
 }
 
 ast_node!(Operand);
+
+impl Operand {
+    pub fn literal(&self) -> Option<Literal> {
+        self.0.descendants().find_map(Literal::cast)
+    }
+}

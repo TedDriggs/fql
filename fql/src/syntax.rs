@@ -32,6 +32,9 @@ pub enum SyntaxKind {
 
     Operator,
 
+    /// A literal is a string, integer, or boolean.
+    Literal,
+
     Operand,
 
     /// A clause is `field:[operator]operand`

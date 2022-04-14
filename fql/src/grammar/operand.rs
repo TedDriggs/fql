@@ -4,21 +4,19 @@ use crate::{
     syntax::SyntaxKind,
 };
 
-const LITERALS: &[TokenKind] = &[TokenKind::Boolean, TokenKind::String, TokenKind::Integer];
+use super::literal;
 
 pub(crate) fn operand(p: &mut Parser) -> Option<CompletedMarker> {
     if p.at(TokenKind::LBracket) {
         let m = p.start();
         p.bump();
-        p.expect(TokenKind::String);
+        if p.at(TokenKind::String) {
+            literal(p);
+        }
         p.expect(TokenKind::RBracket);
         Some(m.complete(p, SyntaxKind::Operand))
-    } else if p.at_set(LITERALS) {
-        let m = p.start();
-        p.bump();
-        Some(m.complete(p, SyntaxKind::Operand))
     } else {
-        None
+        Some(literal(p)?.precede(p).complete(p, SyntaxKind::Operand))
     }
 }
 
@@ -37,7 +35,8 @@ mod tests {
             expect![[r#"
                 Root@0..4
                   Operand@0..4
-                    Boolean@0..4 "true""#]],
+                    Literal@0..4
+                      Boolean@0..4 "true""#]],
         )
     }
 
@@ -48,7 +47,8 @@ mod tests {
             expect![[r#"
                 Root@0..7
                   Operand@0..7
-                    String@0..7 "'hello'""#]],
+                    Literal@0..7
+                      String@0..7 "'hello'""#]],
         )
     }
 
@@ -57,11 +57,12 @@ mod tests {
         check(
             "['hello']",
             expect![[r#"
-            Root@0..9
-              Operand@0..9
-                LBracket@0..1 "["
-                String@1..8 "'hello'"
-                RBracket@8..9 "]""#]],
+                Root@0..9
+                  Operand@0..9
+                    LBracket@0..1 "["
+                    Literal@1..8
+                      String@1..8 "'hello'"
+                    RBracket@8..9 "]""#]],
         )
     }
 }

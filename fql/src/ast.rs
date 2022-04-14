@@ -3,7 +3,7 @@ mod literal;
 mod property;
 
 pub use self::expr::Expr;
-pub use self::literal::{Lit, LitBool, LitInt, LitStr};
+pub use self::literal::{Lit, LitBool, LitInt, LitStr, Literal};
 pub use self::property::Property;
 
 #[macro_export]
