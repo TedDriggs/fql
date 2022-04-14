@@ -4,12 +4,15 @@ use fql::{ast::Expr, parse};
 #[derive(Subcommand)]
 enum Cmd {
     Facts,
+    /// List the properties in FILTER (e.g. "host.online").
     ListProperties,
+    /// List the operand values in FILTER (e.g. "true" or "'windows'").
     ListOperands,
 }
 
 #[derive(Parser)]
 struct Opts {
+    /// An FQL string, such as "host.online:true".
     #[clap(name = "FILTER")]
     filter: String,
     #[clap(subcommand)]
