@@ -2,6 +2,11 @@
 name = "fql-cli"
 version = "0.1.0"
 edition = "2021"
+authors = [
+    "Ted Driggs <ted.driggs@outlook.com>"
+]
+license = "MIT"
+repository = "https://github.com/TedDriggs/fql"
 
 [dependencies]
 clap = { version = "3.1.6", features = ["derive"] }
