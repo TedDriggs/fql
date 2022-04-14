@@ -5,7 +5,7 @@ use crate::{
     syntax::{SyntaxElement, SyntaxKind, SyntaxToken},
 };
 
-ast_node!(Literal from Literal);
+ast_node!(Literal);
 
 impl Literal {
     pub fn value(&self) -> Option<Lit> {
