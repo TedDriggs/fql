@@ -1,4 +1,4 @@
-use std::num::ParseIntError;
+use std::{borrow::Cow, num::ParseIntError};
 
 use crate::{
     ast_node,
@@ -46,6 +46,19 @@ impl LitStr {
             None
         }
     }
+
+    /// Get the value of the string, without leading or trailing quotation marks.
+    ///
+    /// If escape characters are allowed in strings, they will be unescaped in this function's return value.
+    pub fn value(&self) -> Cow<str> {
+        let text = self.0.text();
+        debug_assert!(text.starts_with('\''));
+        debug_assert!(text.ends_with('\''));
+        let mut chars = text.chars();
+        chars.next();
+        chars.next_back();
+        Cow::Borrowed(chars.as_str())
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -60,6 +73,11 @@ impl LitBool {
         }
     }
 
+    /// Get the value of the literal.
+    ///
+    /// # Panics
+    /// This method will panic if the underlying token is not `true` or `false`, as
+    /// that violates a precondition of `LitBool` construction.
     pub fn value(&self) -> bool {
         match self.0.text() {
             t if t == "true" => true,
@@ -81,6 +99,11 @@ impl LitInt {
         }
     }
 
+    /// Get the numeric value of the literal.
+    ///
+    /// # Errors
+    /// This function may return an error if the value is a well-formed integer that
+    /// cannot be parsed into a `u64`.
     pub fn value(&self) -> Result<u64, ParseIntError> {
         self.0.text().parse()
     }
