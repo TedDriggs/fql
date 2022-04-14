@@ -1,0 +1,13 @@
+{
+    "check": {
+        "description": "Add a check expect-test",
+        "prefix": "check",
+        "scope": "rust",
+        "body": [
+            "#[test]",
+            "fn $1() {",
+            "    check(\"$2\", expect![[r#\"\"#]])",
+            "}"
+        ]
+    }
+}

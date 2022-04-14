@@ -1,0 +1,8 @@
+[package]
+name = "fql-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "3.1.6", features = ["derive"] }
+fql = { version = "=0.1.0", path = "../fql" }
