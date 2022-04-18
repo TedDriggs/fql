@@ -1,2 +1,2 @@
 [workspace]
-members = ["fql", "fql-cli"]
+members = ["fql", "fql-cli", "fql-ts"]
