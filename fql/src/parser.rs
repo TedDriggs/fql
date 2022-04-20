@@ -180,6 +180,10 @@ impl Parse {
         format!("{:?}", SyntaxNode::new_root(self.green_node.clone()))
     }
 
+    pub fn diagnostics(&self) -> impl Iterator<Item = &ParseError> {
+        self.errors.iter()
+    }
+
     pub fn error_messages(&self) -> Vec<String> {
         self.errors.iter().map(|e| e.to_string()).collect()
     }
