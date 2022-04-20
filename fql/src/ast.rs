@@ -2,7 +2,7 @@ mod expr;
 mod literal;
 mod property;
 
-pub use self::expr::Expr;
+pub use self::expr::{Clause, Expr, ExprBinary, ExprParen, Operand};
 pub use self::literal::{Lit, LitBool, LitInt, LitStr, Literal};
 pub use self::property::Property;
 
