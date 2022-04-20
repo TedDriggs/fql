@@ -1,0 +1,27 @@
+* {
+    box-sizing: border-box;
+    font-family: 'San Francisco', 'Segoe UI', sans-serif;
+}
+
+#demo {
+    width: 100%;
+    border: 2px solid gray;
+}
+
+.demo-frame {
+    display: grid;
+    grid-template-rows: 30px 1fr;
+    grid-template-columns: 50% 50%;
+}
+
+#output {
+    grid-column: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 12px;
+}
+
+#error-output {
+    grid-column: 1;
+    grid-row: 2;
+}
