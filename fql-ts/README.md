@@ -2,6 +2,11 @@
 
 TypeScript bindings for `fql` parser.
 
+# Build Instructions
+
+1. Run `cargo install wasm-pack`
+2. Run `wasm-pack build --target web`
+
 # Output Snapshot
 
 Note that the `free` methods are added by `wasm-bindgen`.
