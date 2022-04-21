@@ -31,22 +31,22 @@ struct Opts {
 impl Opts {
     fn run(&self) {
         let parse_result = parse(&self.filter);
-        let expr = parse_result.to_expr().unwrap();
+        let expr = parse_result.to_expr();
         match self.command {
-            Cmd::Facts => match expr {
+            Cmd::Facts => match expr.unwrap() {
                 Expr::Binary(_) => println!("binary"),
                 Expr::Paren(_) => println!("parenthesized"),
                 Expr::Clause(_) => println!("clause"),
             },
             Cmd::ListProperties => {
-                for clause in expr.clauses() {
+                for clause in expr.unwrap().clauses() {
                     if let Some(property) = clause.property() {
                         println!("{}", property);
                     }
                 }
             }
             Cmd::ListOperands => {
-                for clause in expr.clauses() {
+                for clause in expr.unwrap().clauses() {
                     if let Some(operand) = clause.operand() {
                         println!("{}", operand);
                     }
@@ -65,6 +65,7 @@ impl Opts {
                 let mut strings = BTreeSet::<String>::new();
 
                 for value in expr
+                    .unwrap()
                     .clauses()
                     .filter_map(|c| c.operand()?.literal()?.value())
                 {
