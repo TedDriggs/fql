@@ -13,6 +13,8 @@ enum Cmd {
     ListProperties,
     /// List the operand values in FILTER (e.g. "true" or "'windows'").
     ListOperands,
+    /// Print the debug representation of the tree, and any diagnostics.
+    PrintTree,
     /// List the unique literal values in FILTER in sorted order by type then value.
     SortLiterals,
 }
@@ -28,7 +30,8 @@ struct Opts {
 
 impl Opts {
     fn run(&self) {
-        let expr = parse(&self.filter).to_expr().unwrap();
+        let parse_result = parse(&self.filter);
+        let expr = parse_result.to_expr().unwrap();
         match self.command {
             Cmd::Facts => match expr {
                 Expr::Binary(_) => println!("binary"),
@@ -47,6 +50,13 @@ impl Opts {
                     if let Some(operand) = clause.operand() {
                         println!("{}", operand);
                     }
+                }
+            }
+            Cmd::PrintTree => {
+                println!("{}", parse_result.debug_tree());
+
+                for diagnostic in parse_result.diagnostics() {
+                    println!("{diagnostic}");
                 }
             }
             Cmd::SortLiterals => {
