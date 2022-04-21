@@ -177,7 +177,7 @@ impl Parse {
     }
 
     pub fn debug_tree(&self) -> String {
-        format!("{:?}", SyntaxNode::new_root(self.green_node.clone()))
+        format!("{:#?}", SyntaxNode::new_root(self.green_node.clone()))
     }
 
     pub fn diagnostics(&self) -> impl Iterator<Item = &ParseError> {
