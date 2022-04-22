@@ -55,6 +55,7 @@ fn expr_binding_power(p: &mut Parser, min_power: u8) -> Option<CompletedMarker> 
         lhs = lhs.precede(p).complete(p, SyntaxKind::InfixExpr);
 
         if rhs.is_none() {
+            p.error();
             break;
         }
     }
@@ -126,7 +127,9 @@ mod tests {
                       Operand@12..16
                         Literal@12..16
                           Boolean@12..16 "true"
-                    Plus@16..17 "+""#]],
+                    Plus@16..17 "+"
+
+                At 16..17, expected '(', or ident"#]],
         );
     }
 
