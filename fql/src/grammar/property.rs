@@ -83,14 +83,17 @@ mod tests {
         check(
             "host..online",
             expect![[r#"
-            Root@0..6
-              Property@0..6
-                Ident@0..4 "host"
-                Period@4..5 "."
-                Error@5..6
-                  Period@5..6 "."
+                Root@0..12
+                  Property@0..6
+                    Ident@0..4 "host"
+                    Period@4..5 "."
+                    Error@5..6
+                      Period@5..6 "."
+                  Error@6..12
+                    Ident@6..12 "online"
 
-            At 5..6, expected ident, found '.'"#]],
+                At 5..6, expected ident, found '.'
+                At 6..12, expected '.', found ident"#]],
         )
     }
 

@@ -15,11 +15,17 @@ impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "At {}..{}, expected {}",
+            "At {}..{}, expected ",
             u32::from(self.range.start()),
             u32::from(self.range.end()),
-            FriendlyList(&self.expected)
         )?;
+
+        if self.expected.is_empty() {
+            write!(f, "nothing")?;
+        } else {
+            write!(f, "{}", FriendlyList(&self.expected))?;
+        }
+
         if let Some(found) = self.found {
             write!(f, ", found {}", found)?;
         }

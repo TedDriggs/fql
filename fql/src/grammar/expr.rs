@@ -346,7 +346,7 @@ mod tests {
         check(
             "host.online:><true",
             expect![[r#"
-                Root@0..14
+                Root@0..18
                   Clause@0..14
                     Property@0..11
                       Ident@0..4 "host"
@@ -357,8 +357,11 @@ mod tests {
                       Gt@12..13 ">"
                     Error@13..14
                       Lt@13..14 "<"
+                  Error@14..18
+                    Boolean@14..18 "true"
 
-                At 13..14, expected '[', boolean, string, or integer, found '<'"#]],
+                At 13..14, expected '[', boolean, string, or integer, found '<'
+                At 14..18, expected '+', or ',', found boolean"#]],
         )
     }
 
@@ -367,7 +370,7 @@ mod tests {
         check(
             "host.online:?true",
             expect![[r#"
-                Root@0..13
+                Root@0..17
                   Clause@0..13
                     Property@0..11
                       Ident@0..4 "host"
@@ -376,8 +379,11 @@ mod tests {
                     Colon@11..12 ":"
                     Error@12..13
                       Error@12..13 "?"
+                  Error@13..17
+                    Boolean@13..17 "true"
 
-                At 12..13, expected '!', '>', '<', '>=', '<=', '~', '!~', '[', boolean, string, or integer, found error"#]],
+                At 12..13, expected '!', '>', '<', '>=', '<=', '~', '!~', '[', boolean, string, or integer, found error
+                At 13..17, expected '+', or ',', found boolean"#]],
         )
     }
 
@@ -419,5 +425,70 @@ mod tests {
                       Literal@17..20
                         Integer@17..20 "100""#]],
         )
+    }
+
+    #[test]
+    fn unclosed_parentheses() {
+        check(
+            "(host.online:true",
+            expect![[r#"
+            Root@0..17
+              ParenExpr@0..17
+                LParen@0..1 "("
+                Clause@1..17
+                  Property@1..12
+                    Ident@1..5 "host"
+                    Period@5..6 "."
+                    Ident@6..12 "online"
+                  Colon@12..13 ":"
+                  Operand@13..17
+                    Literal@13..17
+                      Boolean@13..17 "true"
+
+            At 13..17, expected '+', ',', or ')'"#]],
+        )
+    }
+
+    #[test]
+    fn orphan_rparen() {
+        check(
+            "host.online:true)",
+            expect![[r#"
+            Root@0..17
+              Clause@0..16
+                Property@0..11
+                  Ident@0..4 "host"
+                  Period@4..5 "."
+                  Ident@5..11 "online"
+                Colon@11..12 ":"
+                Operand@12..16
+                  Literal@12..16
+                    Boolean@12..16 "true"
+              Error@16..17
+                RParen@16..17 ")"
+
+            At 16..17, expected '+', or ',', found ')'"#]],
+        )
+    }
+
+    #[test]
+    fn trailing_operators() {
+        check("host.online:true>>", expect![[r#"
+            Root@0..18
+              Clause@0..16
+                Property@0..11
+                  Ident@0..4 "host"
+                  Period@4..5 "."
+                  Ident@5..11 "online"
+                Colon@11..12 ":"
+                Operand@12..16
+                  Literal@12..16
+                    Boolean@12..16 "true"
+              Error@16..18
+                Gt@16..17 ">"
+                Gt@17..18 ">"
+
+            At 16..17, expected '+', or ',', found '>'
+            At 17..18, expected nothing, found '>'"#]])
     }
 }
