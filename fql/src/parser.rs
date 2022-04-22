@@ -64,13 +64,28 @@ impl<'t, 'input> Parser<'t, 'input> {
         }
     }
 
-    fn parse_with<F: Fn(&mut Self) -> Option<CompletedMarker>>(
+    fn parse_with<F: Fn(&mut Parser) -> Option<CompletedMarker>>(
         mut self,
         root_parse_fn: F,
     ) -> Vec<Event> {
         let marker = self.start();
         if !self.at_end() {
-            root_parse_fn(&mut self);
+            self.expect_one(root_parse_fn);
+        }
+
+        // Unlike most programming languages, FQL doesn't support a list of
+        // statements as its top-level grammar units. Therefore, after
+        // finishing parsing one expression everything else needs to be marked
+        // as an error.
+        if !self.at_end() {
+            let tail = self.start();
+
+            while !self.at_end() {
+                self.report_error();
+                self.bump();
+            }
+
+            tail.complete(&mut self, SyntaxKind::Error);
         }
 
         marker.complete(&mut self, SyntaxKind::Root);
@@ -140,6 +155,19 @@ impl<'t, 'input> Parser<'t, 'input> {
     }
 
     pub(super) fn error(&mut self) {
+        self.report_error();
+
+        if !self.at_set_no_expected_kinds(RECOVERY_SET) && !self.at_end() {
+            let m = self.start();
+            self.bump();
+            m.complete(self, SyntaxKind::Error);
+        }
+    }
+
+    /// Report an error.
+    ///
+    /// This function does not continue parsing.
+    fn report_error(&mut self) {
         let (found, range) = if let Some(token) = self.source.peek_token() {
             (Some(token.kind), token.range)
         } else {
@@ -151,12 +179,6 @@ impl<'t, 'input> Parser<'t, 'input> {
             found,
             range,
         }));
-
-        if !self.at_set_no_expected_kinds(RECOVERY_SET) && !self.at_end() {
-            let m = self.start();
-            self.bump();
-            m.complete(self, SyntaxKind::Error);
-        }
     }
 
     fn at_end(&mut self) -> bool {
@@ -202,6 +224,12 @@ pub(crate) fn check_with<F: Fn(&mut Parser) -> Option<CompletedMarker>>(
 ) {
     let parse = parse_with(input, root_parse_fn);
     let syntax_node = crate::syntax::SyntaxNode::new_root(parse.green_node);
+
+    assert_eq!(
+        syntax_node.text_range().len(),
+        rowan::TextSize::try_from(input.len()).unwrap(),
+        "Parse does not cover all input"
+    );
 
     let mut actual_tree = format!("{:#?}", syntax_node);
     for error in parse.errors {
