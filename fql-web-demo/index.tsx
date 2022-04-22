@@ -1,4 +1,6 @@
+import { render } from "react-dom";
 import init, { parse } from "fql-ts";
+import React from "react";
 
 // Wait for the page to load
 window.addEventListener("load", () => {
@@ -15,3 +17,10 @@ window.addEventListener("load", () => {
         });
     });
 });
+
+render(
+    <React.StrictMode>
+        <em>Hello React</em>
+    </React.StrictMode>,
+    document.getElementById("app")
+);
