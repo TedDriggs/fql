@@ -3,6 +3,7 @@ use std::{borrow::Cow, num::ParseIntError};
 use crate::{
     ast_node,
     syntax::{SyntaxElement, SyntaxKind, SyntaxToken},
+    Spanned,
 };
 
 ast_node!(Literal);
@@ -35,6 +36,16 @@ impl Lit {
     }
 }
 
+impl Spanned for Lit {
+    fn span(&self) -> rowan::TextRange {
+        match self {
+            Lit::Str(v) => v.span(),
+            Lit::Bool(v) => v.span(),
+            Lit::Int(v) => v.span(),
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct LitStr(SyntaxToken);
 
@@ -58,6 +69,12 @@ impl LitStr {
         chars.next();
         chars.next_back();
         Cow::Borrowed(chars.as_str())
+    }
+}
+
+impl Spanned for LitStr {
+    fn span(&self) -> rowan::TextRange {
+        self.0.text_range()
     }
 }
 
@@ -87,6 +104,12 @@ impl LitBool {
     }
 }
 
+impl Spanned for LitBool {
+    fn span(&self) -> rowan::TextRange {
+        self.0.text_range()
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct LitInt(SyntaxToken);
 
@@ -106,5 +129,11 @@ impl LitInt {
     /// cannot be parsed into a `u64`.
     pub fn value(&self) -> Result<u64, ParseIntError> {
         self.0.text().parse()
+    }
+}
+
+impl Spanned for LitInt {
+    fn span(&self) -> rowan::TextRange {
+        self.0.text_range()
     }
 }

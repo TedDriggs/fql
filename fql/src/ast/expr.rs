@@ -5,6 +5,7 @@ use rowan::ast::AstNode;
 use crate::{
     ast_node,
     syntax::{Fql, SyntaxElement, SyntaxKind, SyntaxNode, SyntaxToken},
+    Spanned,
 };
 
 use super::{Literal, Property};
@@ -109,6 +110,16 @@ impl AstNode for Expr {
             Expr::Binary(node) => &node.0,
             Expr::Paren(node) => &node.0,
             Expr::Clause(node) => &node.0,
+        }
+    }
+}
+
+impl Spanned for Expr {
+    fn span(&self) -> rowan::TextRange {
+        match self {
+            Expr::Binary(v) => v.span(),
+            Expr::Paren(v) => v.span(),
+            Expr::Clause(v) => v.span(),
         }
     }
 }

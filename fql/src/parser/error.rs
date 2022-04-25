@@ -1,8 +1,8 @@
 use std::fmt;
 
-use text_size::TextRange;
+use rowan::TextRange;
 
-use crate::lexer::TokenKind;
+use crate::{lexer::TokenKind, Spanned};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ParseError {
@@ -31,6 +31,12 @@ impl fmt::Display for ParseError {
         }
 
         Ok(())
+    }
+}
+
+impl Spanned for ParseError {
+    fn span(&self) -> TextRange {
+        self.range
     }
 }
 

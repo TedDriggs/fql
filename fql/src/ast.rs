@@ -47,5 +47,11 @@ macro_rules! ast_node {
                 self.0.fmt(f)
             }
         }
+
+        impl $crate::Spanned for $ast_name {
+            fn span(&self) -> ::rowan::TextRange {
+                self.0.text_range()
+            }
+        }
     };
 }
