@@ -1,4 +1,4 @@
-use fql::ast;
+use fql::{ast, Spanned};
 use wasm_bindgen::{prelude::*, JsCast};
 
 #[wasm_bindgen]
@@ -31,11 +31,8 @@ impl Parse {
         // than `JsValue`.
         self.0
             .diagnostics()
-            .map(|obj| {
-                JsValue::from(Diagnostic {
-                    message: obj.to_string(),
-                })
-            })
+            .map(Diagnostic::from)
+            .map(JsValue::from)
             .collect::<Vec<JsValue>>()
     }
 }
@@ -182,8 +179,54 @@ impl Literal {
     }
 }
 
-#[wasm_bindgen(getter_with_clone)]
+// This doesn't use wasm_bindgen(getter_with_clone) due to known issue
+// with `readonly` https://github.com/rustwasm/wasm-bindgen/issues/2721
+#[wasm_bindgen]
 pub struct Diagnostic {
-    #[wasm_bindgen(readonly)]
-    pub message: String,
+    message: String,
+    range: TextRange,
+}
+
+#[wasm_bindgen]
+impl Diagnostic {
+    #[wasm_bindgen(getter)]
+    pub fn message(&self) -> String {
+        self.message.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn range(&self) -> TextRange {
+        self.range.clone()
+    }
+}
+
+impl<'a> From<&'a fql::ParseError> for Diagnostic {
+    fn from(e: &'a fql::ParseError) -> Self {
+        Self {
+            message: format!("{e:#}"),
+            range: TextRange(e.span()),
+        }
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Clone)]
+pub struct TextRange(fql::TextRange);
+
+#[wasm_bindgen]
+impl TextRange {
+    #[wasm_bindgen(getter)]
+    pub fn start(&self) -> f64 {
+        usize::from(self.0.start()) as f64
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn end(&self) -> f64 {
+        usize::from(self.0.end()) as f64
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn length(&self) -> f64 {
+        usize::from(self.0.len()) as f64
+    }
 }
