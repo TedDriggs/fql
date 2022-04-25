@@ -1,5 +1,5 @@
 import init, { Diagnostic, parse } from "fql-ts";
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 
 export const App: FC = () => {
     const [isLoaded, setLoaded] = useState(false);
@@ -10,19 +10,32 @@ export const App: FC = () => {
 };
 
 const AppBody: FC = () => {
-    const [input, setInput] = useState("");
-    const result = useMemo(() => parse(input), [input]);
+    const [inputText, setInput] = useState("");
+    const inputElement = useRef<HTMLInputElement>(null);
+    const result = useMemo(() => parse(inputText), [inputText]);
 
     return (
         <div className="demo-frame">
             <input
                 id="demo"
-                value={input}
+                ref={inputElement}
+                value={inputText}
                 onInput={e => setInput((e.target as HTMLInputElement).value)}
             />
             <div id="error-output">
                 {(result.diagnostics as Diagnostic[]).map((d, i) => (
-                    <li key={i}>
+                    <li
+                        key={i}
+                        onDoubleClick={e => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            inputElement.current?.setSelectionRange(
+                                d.range.start,
+                                d.range.end,
+                                "forward"
+                            );
+                        }}
+                    >
                         {d.message} [Char {d.range.start.toLocaleString()}]
                     </li>
                 ))}
