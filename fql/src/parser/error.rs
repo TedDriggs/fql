@@ -11,14 +11,22 @@ pub struct ParseError {
     pub(super) range: TextRange,
 }
 
+/// Display the error.
+///
+/// The default formatting will include range information, while the alternate form will
+/// omit that data.
 impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "At {}..{}, expected ",
-            u32::from(self.range.start()),
-            u32::from(self.range.end()),
-        )?;
+        if f.alternate() {
+            write!(f, "Expected ")?;
+        } else {
+            write!(
+                f,
+                "At {}..{}, expected ",
+                u32::from(self.range.start()),
+                u32::from(self.range.end()),
+            )?;
+        }
 
         if self.expected.is_empty() {
             write!(f, "nothing")?;
