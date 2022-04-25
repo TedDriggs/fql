@@ -14,7 +14,7 @@ mod marker;
 mod sink;
 mod source;
 
-pub(crate) use error::ParseError;
+pub use error::ParseError;
 pub(crate) use marker::{CompletedMarker, Marker};
 
 use self::{sink::Sink, source::Source};
