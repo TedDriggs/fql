@@ -179,7 +179,48 @@ impl Clause {
 ast_node!(Operand);
 
 impl Operand {
+    /// Check if an operand has brackets, indicating it is an exact match.
+    pub fn is_exact(&self) -> bool {
+        self.0
+            .children_with_tokens()
+            .filter_map(SyntaxElement::into_token)
+            .any(|t| t.kind() == SyntaxKind::LBracket)
+    }
+
     pub fn literal(&self) -> Option<Literal> {
         self.0.descendants().find_map(Literal::cast)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::parse;
+
+    use super::{Clause, Expr};
+
+    /// Parse a string as an expression and make sure it's a clause.
+    #[track_caller]
+    fn clause(input: &str) -> Clause {
+        if let Expr::Clause(c) = parse(input).to_expr().unwrap() {
+            c
+        } else {
+            panic!("Expression was not clause");
+        }
+    }
+
+    #[test]
+    fn operand_exact() {
+        assert!(clause("host.platform:['windows']")
+            .operand()
+            .unwrap()
+            .is_exact());
+    }
+
+    #[test]
+    fn operand_unclosed_bracket_is_exact() {
+        assert!(clause("host.platform:['windows'")
+            .operand()
+            .unwrap()
+            .is_exact());
     }
 }
