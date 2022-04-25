@@ -3,6 +3,11 @@
     font-family: 'San Francisco', 'Segoe UI', sans-serif;
 }
 
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
 #demo {
     width: 100%;
     border: 2px solid gray;
