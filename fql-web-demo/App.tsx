@@ -1,6 +1,5 @@
 import init, { Diagnostic, parse } from "fql-ts";
-import React, { FC, useEffect, useMemo, useRef, useState } from "react";
-import RemoteData from "ts-remote-data";
+import React, { FC, useMemo, useRef, useState } from "react";
 import { RemoteSuspense, useAsyncOperation } from "ts-remote-data-react";
 
 export const App: FC = () => (
