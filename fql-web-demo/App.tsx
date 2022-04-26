@@ -1,13 +1,17 @@
 import init, { Diagnostic, parse } from "fql-ts";
 import React, { FC, useEffect, useMemo, useRef, useState } from "react";
+import RemoteData from "ts-remote-data";
+import { RemoteSuspense, useAsyncOperation } from "ts-remote-data-react";
 
-export const App: FC = () => {
-    const [isLoaded, setLoaded] = useState(false);
-    const fqlTs = useEffect(() => {
-        init().then(() => setLoaded(true));
-    }, []);
-    return isLoaded ? <AppBody /> : <span>Loading...</span>;
-};
+export const App: FC = () => (
+    <RemoteSuspense
+        data={useAsyncOperation(() => init(), [])}
+        failureFallback={<strong>Unable to load WASM</strong>}
+        loadingFallback={<>Loading...</>}
+    >
+        {() => <AppBody />}
+    </RemoteSuspense>
+);
 
 const AppBody: FC = () => {
     const [inputText, setInput] = useState("");
