@@ -24,6 +24,7 @@ const AppBody: FC = () => {
                 id="demo"
                 ref={inputElement}
                 value={inputText}
+                placeholder="Enter an FQL Expression"
                 onInput={e => setInput((e.target as HTMLInputElement).value)}
             />
             <div id="error-output">
@@ -44,7 +45,7 @@ const AppBody: FC = () => {
                     </li>
                 ))}
             </div>
-            <div id="output" style={{ whiteSpace: "pre" }}>
+            <div id="output" style={{ whiteSpace: "pre", overflow: "auto" }}>
                 {result.debugTree()}
             </div>
         </div>
